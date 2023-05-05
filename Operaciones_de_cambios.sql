@@ -1,17 +1,14 @@
---Eliminar la restricción de StatusEst de la tabla estudiantes--
-ALTER TABLE Estudiantes ALTER COLUMN StatusEst TYPE VARCHAR(1);
+-- Elimina la restriccion que valida el StatusEst en la tabla estudiantes
+ALTER TABLE estudiantes DROP CONSTRAINT restriccionStatusEst;
 
---Eliminar el atributo CodEscuela de la tabla estudiantes--
-ALTER TABLE Estudiantes DROP COLUMN CodEscuela;
+-- Eliminar el atributo CodEscuela de estudiantes
+ALTER TABLE estudiantes DROP COLUMN CodEscuela;
 
---Hacer nulo el atributo DireccionEst de la tabla estudiantes--
-ALTER TABLE Estudiantes ALTER COLUMN DireccionEst DROP NOT NULL;
+-- Hacer que el atributo DireccionEst sea nulo
+ALTER TABLE estudiantes ALTER COLUMN DireccionEst DROP NOT NULL;
 
---Establecer los nuevos valores admitidos por la columna StatusEst--
-CREATE TYPE statusStudent2 AS ENUM ('Activo', 'Retirado', 'No inscrito', 'Egresado');
+-- Modificar las restricciones de StatusEst para que sus valores tomen las palabras completas
+ALTER TABLE estudiantes ADD CONSTRAINT restriccionStatusEst CHECK(StatusEst IN('Activo', 'Retirado', 'No Inscrito', 'Egresado'));
 
---Cambiar los valores admitidos por la columna StatusEst--
-ALTER TABLE Estudiantes ALTER COLUMN StatusEst TYPE statusStudent2 USING StatusEst :: statusStudent2;
-
---Volver a añadir la columna CodEscuela a la tabla estudiantes--
-ALTER TABLE Estudiantes ADD COLUMN CodEscuela VARCHAR(10) NOT NULL;
+-- Agregar nuevamente el atributo CodEscuela
+ALTER TABLE estudiantes ADD COLUMN CodEscuela TEXT REFERENCES escuela(CodEscuela);
